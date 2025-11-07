@@ -19,6 +19,9 @@ class PageManipulationModule extends WebmunkServiceWorkerModule {
     console.log('PageManipulationModule refreshing configuration...')
     webmunkCorePlugin.fetchConfigration()
       .then((configuration:WebmunkConfiguration) => {
+        console.log('PageManipulationModule fetched:')
+        console.log(configuration)
+
         if (configuration !== undefined) {
           const pageManipulationConfig = configuration['page_elements']
 
