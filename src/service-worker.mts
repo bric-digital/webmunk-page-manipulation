@@ -17,7 +17,7 @@ class PageManipulationModule extends WebmunkServiceWorkerModule {
 
   refreshConfiguration() {
     console.log('PageManipulationModule refreshing configuration...')
-    webmunkCorePlugin.fetchConfigration()
+    webmunkCorePlugin.fetchConfiguration()
       .then((configuration:WebmunkConfiguration) => {
         console.log('PageManipulationModule fetched:')
         console.log(configuration)
@@ -64,7 +64,7 @@ class PageManipulationModule extends WebmunkServiceWorkerModule {
       newRule.action.type = 'redirect'
 
       const redirect = {
-        url: `https://www.example.com?destination=${destination}`
+        url: chrome.runtime.getURL(destination)
       }
 
       newRule.action['redirect'] = redirect
