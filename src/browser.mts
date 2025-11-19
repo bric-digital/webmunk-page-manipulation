@@ -4,29 +4,9 @@ import { WebmunkConfiguration } from '@bric/webmunk-core/extension'
 
 import { WebmunkClientModule, registerWebmunkModule } from '@bric/webmunk-core/browser'
 
-    // "page_manipulation": {
-    //     "url_redirects": [{
-    //         "url_filter": "|https://www.google.com/search*udm=50",
-    //         "destination": "restricted.html"
-    //     }, {
-    //         "url_filter": "||gemini.google.com",
-    //         "destination": "restricted.html"
-    //     }, {
-    //         "url_filter": "||chatgpt.com",
-    //         "destination": "restricted.html"
-    //     }],
-    //     "page_elements": [{
-    //         "base_url": "https://www.google.com/search",
-    //         "actions": [{
-    //             "action": "hide",
-    //             "selector": "span.text('AI Mode')"
-    //         }]
-    //     }]
-    // }
-
-
 class PageManipulationModule extends WebmunkClientModule {
   configuration: any
+  refreshTimeout: number = 0
 
   constructor() {
     super()
@@ -45,9 +25,18 @@ class PageManipulationModule extends WebmunkClientModule {
 
         this.configuration = configuration['page_manipulation']
 
-        this.applyConfiguration()
+        if (this.refreshTimeout == 0) {
+          this.refreshTimeout = window.setTimeout(() => {
+            this.applyConfiguration()
+
+            this.refreshTimeout = 0
+          }, 250)
+        }
       })
 
+    new MutationObserver(() => {
+
+    }).observe(document, {subtree: true, childList: true});
     // Install custom jQuery selectors
 
     $.expr.pseudos.containsInsensitive = $.expr.createPseudo(function (query) {
@@ -155,13 +144,15 @@ class PageManipulationModule extends WebmunkClientModule {
         for (const action of elementRule.actions) {
           $(action.selector).each((index, element) => {
             if (action.action === 'hide') {
-              const oldValue = $(element).css('display')
+              if ($(element).hasAttr('data-webmunk-prior-css-display') === false) {
+                const oldValue = $(element).css('display')
 
-              if (oldValue !== undefined) {
-                $(element).attr('data-webmunk-prior-css-display', oldValue)
+                if (oldValue !== undefined) {
+                  $(element).attr('data-webmunk-prior-css-display', oldValue)
+                }
+
+                $(element).css('display', 'none')
               }
-
-              $(element).css('display', 'none')
             } else if (action.action == 'show') {
               const originalValue = $(element).attr('data-webmunk-prior-css-display')
 
