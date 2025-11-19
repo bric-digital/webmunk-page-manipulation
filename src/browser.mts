@@ -20,9 +20,6 @@ class PageManipulationModule extends WebmunkClientModule {
       }).then((response:{ [name: string]: any; }) => { // eslint-disable-line @typescript-eslint/no-explicit-any
         const configuration = response as WebmunkConfiguration
 
-        console.log('configuration')
-        console.log(configuration)
-
         this.configuration = configuration['page_manipulation']
 
         if (this.refreshTimeout == 0) {
@@ -131,6 +128,8 @@ class PageManipulationModule extends WebmunkClientModule {
   }
 
   applyConfiguration() {
+    console.log('PageManipulationModule.applyConfiguration')
+
     if ([null, undefined].includes(this.configuration)) {
       return
     }
