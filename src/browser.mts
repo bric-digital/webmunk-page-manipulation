@@ -134,9 +134,9 @@ class PageManipulationModule extends WebmunkClientModule {
       }
     })
 
-    $.expr.pseudos.trimmedTextEquals = $.expr.createPseudo(function(arg) {
-      return function(elem) {
-        return $(elem).text().match("^" + arg + "$")
+    $.expr.pseudos.trimmedTextEquals = $.expr.createPseudo((...args: any[]) => {
+      return function(elem) : RegExpMatchArray {
+        return $(elem).text().match("^" + args[0] + "$")
       }
     })
   }
