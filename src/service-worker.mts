@@ -113,7 +113,6 @@ class PageManipulationModule extends WebmunkServiceWorkerModule {
           console.log(`Unable to update blocking rules: ${reason}`)
         })
       })
-
   }
 }
 
