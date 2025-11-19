@@ -32,7 +32,13 @@ class PageManipulationModule extends WebmunkClientModule {
       })
 
     new MutationObserver(() => {
+        if (this.refreshTimeout == 0) {
+          this.refreshTimeout = window.setTimeout(() => {
+            this.applyConfiguration()
 
+            this.refreshTimeout = 0
+          }, 250)
+        }
     }).observe(document, {subtree: true, childList: true});
     // Install custom jQuery selectors
 
