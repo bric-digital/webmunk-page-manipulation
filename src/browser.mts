@@ -13,8 +13,6 @@ class PageManipulationModule extends WebmunkClientModule {
   }
 
   setup() {
-    console.log(`Setting up PageManipulationModule...`)
-
     chrome.runtime.sendMessage({
         'messageType': 'fetchConfiguration',
       }).then((response:{ [name: string]: any; }) => { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -40,6 +38,7 @@ class PageManipulationModule extends WebmunkClientModule {
           }, 250)
         }
     }).observe(document, {subtree: true, childList: true});
+
     // Install custom jQuery selectors
 
     $.expr.pseudos.containsInsensitive = $.expr.createPseudo(function (query) {
@@ -140,6 +139,8 @@ class PageManipulationModule extends WebmunkClientModule {
       return
     }
 
+    let blockedCount = {}
+
     for (const elementRule of this.configuration['page_elements']) {
       var baseUrl = elementRule['base_url']
 
@@ -157,6 +158,14 @@ class PageManipulationModule extends WebmunkClientModule {
                 }
 
                 $(element).css('display', 'none')
+
+                const key = `${action.selector}:hide`
+
+                if (blockedCount[key] === undefined) {
+                  blockedCount[key] = 0
+                }
+
+                blockedCount[key] += 1
               }
             } else if (action.action == 'show') {
               const originalValue = $(element).attr('data-webmunk-prior-css-display')
@@ -164,6 +173,14 @@ class PageManipulationModule extends WebmunkClientModule {
               if (originalValue !== undefined) {
                 $(element).css('display', originalValue)
                 $(element).removeAttr('data-webmunk-prior-css-display')
+
+                const key = `${action.selector}:show`
+
+                if (blockedCount[key] === undefined) {
+                  blockedCount[key] = 0
+                }
+
+                blockedCount[key] += 1
               } else {
                 $(element).css('display', '')
               }
@@ -172,6 +189,14 @@ class PageManipulationModule extends WebmunkClientModule {
         }
       }
     }
+
+    chrome.runtime.sendMessage({
+      'messageType': 'logEvent',
+      'event': {
+        'name': 'page-manipulation',
+        'updates': blockedCount
+      }
+    })
   }
 }
 
