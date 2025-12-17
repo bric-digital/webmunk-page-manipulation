@@ -9,6 +9,10 @@ class PageManipulationModule extends WebmunkServiceWorkerModule {
     super()
   }
 
+  moduleName() {
+    return 'PageManipulationModule'
+  }
+
   setup() {
     this.refreshConfiguration()
   }
