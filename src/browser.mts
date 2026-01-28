@@ -152,7 +152,12 @@ class PageManipulationModule extends WebmunkClientModule {
         if (baseUrl === undefined || window.location.href.toLowerCase().startsWith(baseUrl.toLowerCase())) {
           // Apply rule
 
+          console.log(`Applying page manipulation rules to ${window.location.href}...`)
+
           for (const action of elementRule.actions) {
+            console.log('Action')
+            console.log(action)
+
             $(action.selector).each((index, element) => {
               if (action.action === 'hide') {
                 if ($(element).attr('data-webmunk-prior-css-display') === undefined) {
@@ -200,6 +205,8 @@ class PageManipulationModule extends WebmunkClientModule {
               }
             })
           }
+        } else {
+          console.log(`Skip applying page manipulation rules to ${window.location.href}...`)
         }
       }
 
