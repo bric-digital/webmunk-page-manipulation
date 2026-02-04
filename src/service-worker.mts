@@ -42,6 +42,9 @@ class PageManipulationModule extends WebmunkServiceWorkerModule {
         if (configuration !== undefined) {
           const pageManipulationConfig = configuration['page_manipulation']
 
+          console.log(`[page_manipulation] configuration`)
+          console.log(configuration)
+
           if (pageManipulationConfig !== undefined) {
             this.updateConfiguration(pageManipulationConfig)
 
